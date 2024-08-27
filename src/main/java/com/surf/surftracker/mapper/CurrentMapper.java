@@ -43,7 +43,7 @@ public class CurrentMapper {
         }
         throw new NoSuchElementException("No rating found for the timestamp: " + nearestHour);
     }
-
+/*
     //@Scheduled... every hour
     //SurfLine current --> if plus add plus...String
     public void SurfLineWaveHeight() {
@@ -54,7 +54,7 @@ currentSpot.setSurfLineWaveHeight();
     }
 
 }
-   /*
+*/   /*
     //SurfCaptain current		    String
     public void surfCaptainWaveHeight(){}
 
