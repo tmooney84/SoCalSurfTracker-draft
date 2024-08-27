@@ -4,44 +4,57 @@ CURRENT CONDITIONS:                      MAPPER CLASS INFORMATION!!!
  */
 package com.surf.surftracker.mapper;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import com.surf.surftracker.dto.SurfLine_rating_DTO;
 import com.surf.surftracker.model.Current;
+import com.surf.surftracker.util.TimeStampUtils;
 
 //@Scheduled
-public class CurrentMapper {
-    private Current currentSurfBreak;
 
-    public CurrentMapper(Current currentSurfBreak){
-        this.currentSurfBreak = currentSurfBreak;
+public class CurrentMapper {
+    private Current currentSpot;
+    private SurfLine_rating_DTO currentRating;
+    Long nearestHour = TimeStampUtils.NearestHour();
+
+    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO) {
+        this.currentSpot = currentSpot;
+        this.currentRating = currentRatingDTO;
     }
 
     //@Scheduled
 //current wave height
 
-
-
-
-
-
-//Current average wave height    String average of the 4 forecasts
-    public void averageWaveHeight(){}
-
-    //Current wave quality	(MAKE IT COLOR CODED!!!)	 String from surfline may need to adjust using regex? for "_"
-public void waveQuality(){
-    //get current timestamp to convert to nearest hour for search
-  //  long currentTime = Instant.now().getEpochSecond();
-
-
-    //do a for each loop to cycle through to find the correct timestamp
-    //and then access the key value>>> clean up "_" with regex
-}
-
-//@Scheduled... every hour
-    //SurfLine current --> if plus add plus...String
-    public void mapSurfLineWaveHeight(){
-     //  String mappedSLWave = "3-4+"; "3" "4" "plus"
-      //  currentSurfBreak.setSurfLineWaveHeight(mappedSLWave);
+    //Current average wave height    String average of the 4 forecasts
+    public void averageWaveHeight() {
     }
 
+    //Current WaveQuality
+    public void WaveQuality() {
+        List<SurfLine_rating_DTO.Rating> ratings = currentRating.getData().getRating();
+        for (SurfLine_rating_DTO.Rating rating : ratings) {
+            if (Long.valueOf(rating.getTimestamp()).equals(nearestHour)) {
+                String currentRating = rating.getRatingDetails().getKey();
+                currentRating = currentRating.replaceAll("_", " ");
+                currentSpot.setWaveQuality(currentRating);
+                return;
+            }
+        }
+        throw new NoSuchElementException("No rating found for the timestamp: " + nearestHour);
+    }
+
+    //@Scheduled... every hour
+    //SurfLine current --> if plus add plus...String
+    public void SurfLineWaveHeight() {
+        //  String mappedSLWave = "3-4+"; "3" "4" "plus"
+        //  currentSurfBreak.setSurfLineWaveHeight(mappedSLWave);
+
+currentSpot.setSurfLineWaveHeight();
+    }
+
+}
+   /*
     //SurfCaptain current		    String
     public void surfCaptainWaveHeight(){}
 
@@ -78,4 +91,4 @@ public void waveQuality(){
     public void swellTwo(){}
 
     public void swellThree(){}
-}
+} */

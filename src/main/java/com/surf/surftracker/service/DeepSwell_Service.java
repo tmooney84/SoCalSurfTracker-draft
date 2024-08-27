@@ -10,14 +10,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DeepSwell_Service {
-        private Current testLowersCurrent;
+    private Current testLowersCurrent;
 
-        public String getDeepSwellCurrent() {
+    public DeepSwell_Service(Current testLowersCurrent)
+    {
+        this.testLowersCurrent = testLowersCurrent;
+    }
 
-            String[] DSurl = {
-                    "https://deepswell.com/surf-report/US/South-Orange-County/Lower-Trestles/1030",
-            };
-
+    String[] DSurl = {
+            "https://deepswell.com/surf-report/US/South-Orange-County/Lower-Trestles/1030",
+    };
+        public void getDeepSwellCurrent() {
             try {
                 for (int i = 0; i < DSurl.length; i++) {
                     Document dsConnect = Jsoup.connect(DSurl[i])
@@ -41,7 +44,7 @@ public class DeepSwell_Service {
                             System.out.println("Current Wave height at location #" + i + ": " + waveHeight);
                             //***hard-coded for Lower Trestles, but needs to be automated for all of them
                             //could include their names in here as well and direct them to each object
-                            testLowersCurrent.setDeepSwellWaveHeight(waveHeight);
+                            testLowersCurrent.setDeepSwellWaveHeight(waveHeight+"ft");
                         } else {
                             System.out.println("Wave height not found at location #" + i);
                         }

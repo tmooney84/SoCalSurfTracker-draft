@@ -16,8 +16,9 @@ public class SurfLine_rating_DTO implements Serializable {
     @JsonProperty("associated")
     private Associated associated;
 
+    //changed to public for testing
     @JsonProperty("data")
-    private Data data;
+    public Data data;
 
     @Override
     public String toString() {
@@ -65,18 +66,25 @@ public class SurfLine_rating_DTO implements Serializable {
         }
     }
 
-    @Setter
-    @Getter
     public static class Data implements Serializable {
 
         @JsonProperty("rating")
-        private List<Rating> rating;
+        public List<Rating> rating;
 
         @Override
         public String toString() {
             return "Data{" +
                     "rating=" + rating +
                     '}';
+        }
+
+        public List<Rating> getRating() {
+            return this.rating;
+        }
+
+        @JsonProperty("rating")
+        public void setRating(List<Rating> rating) {
+            this.rating = rating;
         }
     }
 
