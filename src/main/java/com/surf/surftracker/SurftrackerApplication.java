@@ -14,6 +14,15 @@ public class SurftrackerApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(SurftrackerApplication.class, args);
 	}
+
+	//  @Bean
+//  CommandLineRunner commandLineRunner(UserService userService, BCryptPasswordEncoder encoder){
+//     return args -> {
+//
+//        userService.save(new User("user", encoder.encode("password")));
+//     };
+//  }
+
 		@Override
 		public void run(String... args) throws Exception {
 		Current lowerTrestlesCurrent = new Current();
@@ -30,8 +39,10 @@ public class SurftrackerApplication implements CommandLineRunner {
 		DeepSwell_Service lt_ds_service = new DeepSwell_Service(lowerTrestlesCurrent);
 
 		try {
+			//once the services are run, I could implement them here as a list
 			SurfLine_rating_DTO ratingDTO = sl_rating_service.getSurfLineRating();
-			CurrentMapper slCurrentMapper = new CurrentMapper(lowerTrestlesCurrent,ratingDTO);
+			SurfLine_sunlight_DTO sunlightDTO =
+			CurrentMapper slCurrentMapper = new CurrentMapper(lowerTrestlesCurrent,ratingDTO,sunlightDTO);
 			slCurrentMapper.WaveQuality();
 
 			SurfLine_sunlight_DTO sunlightDTO = sl_sunlight_service.getSurfLineSunlight();

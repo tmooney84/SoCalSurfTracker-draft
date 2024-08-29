@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SurfSpots {
+public class SurfSpotsDeprecated {
     private String spotName;
     private String sl_Rating_URL;
     private String sl_Sunlight_URL;

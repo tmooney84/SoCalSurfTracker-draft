@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.surf.surftracker.dto.SurfLine_rating_DTO;
+import com.surf.surftracker.dto.SurfLine_sunlight_DTO;
 import com.surf.surftracker.model.Current;
 import com.surf.surftracker.util.TimeStampUtils;
 
@@ -16,11 +17,15 @@ import com.surf.surftracker.util.TimeStampUtils;
 public class CurrentMapper {
     private Current currentSpot;
     private SurfLine_rating_DTO currentRating;
-    Long nearestHour = TimeStampUtils.NearestHour();
+    private SurfLine_sunlight_DTO currentSunlightDTO;
 
-    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO) {
+    Long nearestHour = TimeStampUtils.NearestHour();
+    Long midnight = TimeStampUtils.Midnight();
+
+    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO, SurfLine_sunlight_DTO currentSunlightDTO) {
         this.currentSpot = currentSpot;
         this.currentRating = currentRatingDTO;
+        this.currentSunlightDTO = currentSunlightDTO;
     }
 
     //@Scheduled
@@ -43,6 +48,22 @@ public class CurrentMapper {
         }
         throw new NoSuchElementException("No rating found for the timestamp: " + nearestHour);
     }
+
+    //Sunrise					    String 6:53AM >>> find previous midnight and then search for sunrise
+    public void sunrise(){
+        List<SurfLine_sunlight_DTO.Sunlight> sunlight =currentSunlightDTO.getData().getSunlight();
+        for(SurfLine_sunlight_DTO.Sunlight sunlight: sunlight){
+            if(Long.valueOf(sunlight.getTimestamp()).equals(midnight))
+        }
+
+    }
+
+    //Sunset					        String 7:54PM >>> find previous midnight and then search for sunset
+    public void sunset(){}
+
+
+
+}
 /*
     //@Scheduled... every hour
     //SurfLine current --> if plus add plus...String
@@ -76,11 +97,7 @@ currentSpot.setSurfLineWaveHeight();
     //Air temperature current  	    String 83ºF
     public void airTemperature(){}
 
-    //Sunrise					    String 6:53AM >>> find previous midnight and then search for sunrise
-    public void sunrise(){}
 
-    //Sunset					        String 7:54PM >>> find previous midnight and then search for sunset
-    public void sunset(){}
 
     //Weather					    String Search by time @hour and then get rid of "_" and all caps maybe regex?
     public void weather(){}
