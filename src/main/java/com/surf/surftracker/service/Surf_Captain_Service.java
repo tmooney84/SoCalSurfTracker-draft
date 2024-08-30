@@ -1,5 +1,7 @@
 package com.surf.surftracker.service;
 
+import com.surf.surftracker.model.Current;
+import com.surf.surftracker.util.SurfSpotURLList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,21 +11,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Surf_Captain_Service {
-    public static void main(String[] args) {
-        String[] SCurl = {
-                "https://surfcaptain.com/forecast/san-onofre-california",
-                "https://surfcaptain.com/forecast/trestles-california/",
-                "https://surfcaptain.com/forecast/trestles-california/",
-                "https://surfcaptain.com/forecast/san-clemente-california/",
-                "https://surfcaptain.com/forecast/dana-point-california/",
-                "https://surfcaptain.com/forecast/laguna-beach-california/",
-                "https://surfcaptain.com/forecast/newport-beach-california/",
-                "https://surfcaptain.com/forecast/huntington-beach-california/",
-                "https://surfcaptain.com/forecast/seal-beach-california/",
-                "https://surfcaptain.com/forecast/oceanside-california/",
-                "https://surfcaptain.com/forecast/carlsbad-california/"
-        };
+    private Current scCurrentLowers;
 
+    public Surf_Captain_Service(Current scCurrentLowers)
+    {
+        this.scCurrentLowers = scCurrentLowers;
+    }
+    String[] SCurl = {
+            SurfSpotURLList.LowerTrestles.surfCaptainURL(),
+    };
+
+    public void getSurfCaptainCurrent(){
         try {
             for (int i = 0; i < SCurl.length; i++) {
                 Document scConnect = Jsoup.connect(SCurl[i])
@@ -33,7 +31,7 @@ public class Surf_Captain_Service {
                 Element div = scConnect.getElementById("fcst-current-title");
                 if (div != null) {
                     String text = div.text();
-                    System.out.println("Fetched text for location #" + i + ": " + text);
+                   // System.out.println("Fetched text for location #" + i + ": " + text);
 
                     // Regular expression to match wave height patterns
                     Pattern pattern = Pattern.compile("(\\d+-\\d+\\+?|\\d+\\+?) ft");
@@ -42,8 +40,10 @@ public class Surf_Captain_Service {
                     if (matcher.find()) {
                         String waveHeight = matcher.group(1);
 
+                        scCurrentLowers.setSurfCaptainWaveHeight(waveHeight + " ft");
+
                         //setter to spot object for SurfForecast wave height
-                        System.out.println("Current Wave height at location #" + i + ": " + waveHeight);
+              //          System.out.println("Current Wave height at location #" + i + ": " + waveHeight);
                     } else {
                         System.out.println("Wave height not found at location #" + i);
                     }

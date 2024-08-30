@@ -4,6 +4,10 @@ CURRENT CONDITIONS:                      MAPPER CLASS INFORMATION!!!
  */
 package com.surf.surftracker.mapper;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -50,20 +54,42 @@ public class CurrentMapper {
     }
 
     //Sunrise					    String 6:53AM >>> find previous midnight and then search for sunrise
-    public void sunrise(){
-        List<SurfLine_sunlight_DTO.Sunlight> sunlight =currentSunlightDTO.getData().getSunlight();
-        for(SurfLine_sunlight_DTO.Sunlight sunlight: sunlight){
-            if(Long.valueOf(sunlight.getTimestamp()).equals(midnight))
+    public void sunrise() {
+        List<SurfLine_sunlight_DTO.Sunlight> sunlightList = currentSunlightDTO.getData().getSunlight();
+        for (SurfLine_sunlight_DTO.Sunlight sun : sunlightList) {
+            if (sun.getMidnight() == midnight) {
+                long sunriseTimestamp = sun.getSunrise();
+                ZonedDateTime sunriseTime = Instant.ofEpochSecond(sunriseTimestamp)
+                        .atZone(ZoneId.of("America/Los_Angeles"));
+                String formattedSunriseTime = sunriseTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                currentSpot.setSunrise(formattedSunriseTime);
+                return;
+            }
         }
-
+        throw new NoSuchElementException("No sunrise found for the midnight timestamp: " + midnight);
     }
 
     //Sunset					        String 7:54PM >>> find previous midnight and then search for sunset
-    public void sunset(){}
+    public void sunset() {
+        List<SurfLine_sunlight_DTO.Sunlight> sunlightList = currentSunlightDTO.getData().getSunlight();
+        for (SurfLine_sunlight_DTO.Sunlight sun : sunlightList) {
+            if (sun.getMidnight() == midnight) {
+                long sunriseTimestamp = sun.getSunset();
 
+            //    System.out.println("Midnight: " + midnight);
+                //    System.out.println("sunrise: " + sunriseTimestamp);
 
-
+                ZonedDateTime sunriseTime = Instant.ofEpochSecond(sunriseTimestamp)
+                        .atZone(ZoneId.of("America/Los_Angeles"));
+                String formattedSunriseTime = sunriseTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                currentSpot.setSunset(formattedSunriseTime);
+                return;
+            }
+        }
+        throw new NoSuchElementException("No sunrise found for the midnight timestamp: " + midnight);
+    }
 }
+
 /*
     //@Scheduled... every hour
     //SurfLine current --> if plus add plus...String

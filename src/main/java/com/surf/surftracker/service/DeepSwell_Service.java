@@ -38,7 +38,7 @@ public class DeepSwell_Service {
 
                         if (matcher.find()) {
                             String waveHeight = matcher.group(1);
-                            testLowersCurrent.setDeepSwellWaveHeight(waveHeight+"ft");
+                            testLowersCurrent.setDeepSwellWaveHeight(waveHeight+" ft");
                         } else {
                             System.out.println("Wave height not found at location #" + i);
                         }
