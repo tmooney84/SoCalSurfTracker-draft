@@ -12,10 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.surf.surftracker.dto.SurfLine_rating_DTO;
-import com.surf.surftracker.dto.SurfLine_sunlight_DTO;
-import com.surf.surftracker.dto.SurfLine_surf_DTO;
-import com.surf.surftracker.dto.SurfLine_wind_DTO;
+import com.surf.surftracker.dto.*;
 import com.surf.surftracker.model.Current;
 import com.surf.surftracker.util.TimeStampUtils;
 
@@ -27,16 +24,18 @@ public class CurrentMapper {
     private final SurfLine_sunlight_DTO currentSunlightDTO;
     private final SurfLine_surf_DTO currentSurfDTO;
     private final SurfLine_wind_DTO currentWindDTO;
+    private final SurfLine_weather_DTO currentWeatherDTO;
 
     Long nearestHour = TimeStampUtils.NearestHour();
     Long midnight = TimeStampUtils.Midnight();
 
-    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO, SurfLine_sunlight_DTO currentSunlightDTO, SurfLine_surf_DTO currentSurfDTO, SurfLine_wind_DTO currentWindDTO) {
+    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO, SurfLine_sunlight_DTO currentSunlightDTO, SurfLine_surf_DTO currentSurfDTO, SurfLine_wind_DTO currentWindDTO, SurfLine_weather_DTO currentWeatherDTO) {
         this.currentSpot = currentSpot;
         this.currentRatingDTO = currentRatingDTO;
         this.currentSunlightDTO = currentSunlightDTO;
         this.currentSurfDTO = currentSurfDTO;
         this.currentWindDTO = currentWindDTO;
+        this.currentWeatherDTO = currentWeatherDTO;
     }
 
     //@Scheduled
@@ -86,7 +85,7 @@ public class CurrentMapper {
         throw new NoSuchElementException("No surf details found for the timestamp: " + TimeStampUtils.NearestHour());
     }
 
-    //Sunrise					    String 6:53AM >>> find previous midnight and then search for sunrise
+    //Sunrise
     public void SL_Sunrise() {
         List<SurfLine_sunlight_DTO.Sunlight> sunlightList = currentSunlightDTO.getData().getSunlight();
         for (SurfLine_sunlight_DTO.Sunlight sun : sunlightList) {
@@ -102,7 +101,7 @@ public class CurrentMapper {
         throw new NoSuchElementException("No sunrise found for the midnight timestamp: " + midnight);
     }
 
-    //Sunset					        String 7:54PM >>> find previous midnight and then search for sunset
+    //Sunset
     public void SL_Sunset() {
         List<SurfLine_sunlight_DTO.Sunlight> sunlightList = currentSunlightDTO.getData().getSunlight();
         for (SurfLine_sunlight_DTO.Sunlight sun : sunlightList) {
@@ -122,59 +121,63 @@ public class CurrentMapper {
         throw new NoSuchElementException("No sunrise found for the midnight timestamp: " + midnight);
     }
 
-
+    //Wind and Wind Direction
     public void SL_Wind() {
-        List<SurfLine_wind_DTO.WindData.WindEntry> currentWind = currentWindDTO.getData().getWind();
-        long nearestHour = TimeStampUtils.NearestHour();
-        System.out.println("Nearest Hour: " + nearestHour);
-        for (SurfLine_wind_DTO.WindData.WindEntry wind : currentWind) {
-            System.out.println("Wind Entry Timestamp: " + wind.getTimestamp());
-            if (wind.getTimestamp() == TimeStampUtils.NearestHour()) {
+        List<SurfLine_wind_DTO.WindData.WindEntry> windEntries = currentWindDTO.getData().getWind();
 
-                double currentWindSpeed = wind.getSpeed();
-                int speed = (int)currentWindSpeed;
-                double direction =  wind.getDirection();
-                String formattedDirection = getCompassDirection((int) direction);
-                String windSpeed = String.format("%dkts %s", speed, formattedDirection);
-                System.out.println("Here is the current windspeed: " + windSpeed);
-                currentSpot.setWind(windSpeed);
+        for (SurfLine_wind_DTO.WindData.WindEntry windEntry : windEntries) {
+            if (windEntry.getTimestamp().equals(TimeStampUtils.NearestHour())) {
+                int speed = windEntry.getSpeed().intValue();
+                int direction = windEntry.getDirection().intValue();
+                String formattedDirection = getCompassDirection(direction);
+                String windSpeedDirection = String.format("%dkts %s", speed, formattedDirection);
+                currentSpot.setWind(windSpeedDirection);
                 return;
             }
         }
         throw new NoSuchElementException("No wind found for the timestamp: " + TimeStampUtils.NearestHour());
     }
-
     private String getCompassDirection(int direction) {
         String[] compassDirections = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
         int index = (int) Math.round(((double) direction % 360) / 22.5);
         return compassDirections[index % 16];
     }
-    /*
-    //Wind current				    String 5mph E
-    public void SL_Wind() {
-        List<SurfLine_wind_DTO.WindData.WindEntry> currentWind = currentWindDTO.getData().getWind();
-        for (SurfLine_wind_DTO.WindData.WindEntry wind : currentWind) {
-            if (wind.getTimestamp() == TimeStampUtils.NearestHour()) {
-                int speed = (int) wind.getSpeed();
-                int direction = (int)wind.getDirection();
-                String formattedDirection;
 
-                String.format("%fKTS %s",speed,formattedDirection);
+    //Water temperature current
+    public void SL_WaterTemp(){
+        List<SurfLine_weather_DTO.DataData.WeatherEntry> weatherEntries = currentWeatherDTO.getData().getWeather();
+        long nearestHour = TimeStampUtils.NearestHour();
+
+        for (SurfLine_weather_DTO.DataData.WeatherEntry weatherEntry : weatherEntries) {
+            if (weatherEntry.getTimestamp().equals(nearestHour)) {
+                String temperature = String.format("%d°F", Math.round(weatherEntry.getTemperature()));
+                currentSpot.setWaterTemperature(temperature);
+                return;
             }
-
-
-            currentSpot.setWind(windSpeed);
-            return;
         }
-        throw new NoSuchElementException("No wind found for the timestamp: " + TimeStampUtils.NearestHour());
+        throw new NoSuchElementException("No temperature found for the timestamp: " + nearestHour);
     }
-*/
-//6 KTS E
+
+    //Weather					    String Search by time @hour and then get rid of "_" and all caps maybe regex?
+
+
+    public void SL_WeatherConditons(){
+        List<SurfLine_weather_DTO.DataData.WeatherEntry> condtionEntries = currentWeatherDTO.getData().getWeather();
+        long nearestHour = TimeStampUtils.NearestHour();
+
+        for (SurfLine_weather_DTO.DataData.WeatherEntry conditionEntry : condtionEntries) {
+            if (conditionEntry.getTimestamp().equals(nearestHour)) {
+                String weatherCondition = conditionEntry.getCondition().replace("_"," ");
+                currentSpot.setWeatherConditions(weatherCondition);
+                return;
+            }
+        }
+        throw new NoSuchElementException("No temperature found for the timestamp: " + nearestHour);
+    }
+
 
 
 }
-
-
 
 
 /*
@@ -198,16 +201,10 @@ currentSpot.setSurfLineWaveHeight();
     //Tide current				    String Low Tide @ 16:00 >>> will have to have some logic for finding the low or high tide and time
     public void tide(){}
 
-    //Water temperature current	    String 67ºF
-    public void waterTemperature(){}
 
-    //Air temperature current  	    String 83ºF
+
+     //Air temperature current  	    String 83ºF
     public void airTemperature(){}
-
-
-
-    //Weather					    String Search by time @hour and then get rid of "_" and all caps maybe regex?
-    public void weather(){}
 
     //Current Swells				    String Top 1.6ft @ 14s SSW 193º three swells locate by hour and pull top 3; need logic for SSW, SSE etc. 251 degrees is WSW...so find 					 something for the logic
     public void swellOne(){}

@@ -22,7 +22,7 @@ public class Current {
     private String airTemperature;
     private String sunrise;
     private String sunset;
-    private String weather;
+    private String weatherConditions;
     private String swellOne;
     private String swellTwo;
     private String swellThree;

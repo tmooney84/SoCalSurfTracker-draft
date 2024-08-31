@@ -27,13 +27,9 @@ public class Surf_Captain_Service {
                 Document scConnect = Jsoup.connect(SCurl[i])
                         .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
                                 "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36").get();
-
                 Element div = scConnect.getElementById("fcst-current-title");
                 if (div != null) {
                     String text = div.text();
-                   // System.out.println("Fetched text for location #" + i + ": " + text);
-
-                    // Regular expression to match wave height patterns
                     Pattern pattern = Pattern.compile("(\\d+-\\d+\\+?|\\d+\\+?) ft");
                     Matcher matcher = pattern.matcher(text);
 
