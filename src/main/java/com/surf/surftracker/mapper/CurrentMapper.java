@@ -3,14 +3,13 @@
 CURRENT CONDITIONS:                      MAPPER CLASS INFORMATION!!!
  */
 package com.surf.surftracker.mapper;
-
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.sql.Time;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 import com.surf.surftracker.dto.*;
 import com.surf.surftracker.model.Current;
@@ -173,46 +172,52 @@ public class CurrentMapper {
                 return;
             }
         }
-        throw new NoSuchElementException("No temperature found for the timestamp: " + nearestHour);
+        throw new NoSuchElementException("No weather found for the timestamp: " + nearestHour);
     }
 
     //Tide current				    String Low Tide @ 16:00 >>> will have to have some logic for finding the low or high tide and time
+
+
     public void SL_Tides() {
         List<SurfLine_tides_DTO.DataData.TideEntry> tideEntries = currentTidesDTO.getData().getTides();
-
+        boolean tideFound = false;
 
         for (SurfLine_tides_DTO.DataData.TideEntry tideEntry : tideEntries) {
             String tideInfo = "";
             String tideType = "";
+
             if (tideEntry.getTimestamp().equals(nearestHour)) {
                 Double tideHeight = tideEntry.getHeight();
 
                 if (tideEntry.getType().equals("LOW") || tideEntry.getType().equals("HIGH")) {
                     tideType = tideEntry.getType() + " TIDE";
                 }
-                tideInfo = String.format("%.1f ft %s", tideHeight, tideType);
-                    currentSpot.setTide(tideInfo);
-                    System.out.println("Here is the tide info: " + tideInfo);
-            }
 
+                tideInfo = String.format("%.1f ft %s", tideHeight, tideType);
+                currentSpot.setTide(tideInfo);
+                System.out.println("Here is the tide info: " + tideInfo);
+                tideFound = true;
+                break;
+            }
+        }
+
+        if (!tideFound) {
+            throw new NoSuchElementException("No tide information found for the timestamp: " + nearestHour);
         }
     }
+
 
 
     //Future Low or High Tide
     public void SL_FutureTides() {
         List<SurfLine_tides_DTO.DataData.TideEntry> tideEntries = currentTidesDTO.getData().getTides();
+        String futureTideInfo = null; // Initialize to null to check if a tide is found
 
-        double futureTideHeight = 0;
-        String futureTide = "";
-        long tideTime = 0;
-        String futureTideInfo = "";
-
-        for(SurfLine_tides_DTO.DataData.TideEntry tideEntry : tideEntries) {
+        for (SurfLine_tides_DTO.DataData.TideEntry tideEntry : tideEntries) {
             if (tideEntry.getTimestamp() > nearestHour && (tideEntry.getType().equals("LOW") || tideEntry.getType().equals("HIGH"))) {
-                futureTide = tideEntry.getType() + " TIDE";
-                futureTideHeight = tideEntry.getHeight();
-                tideTime = tideEntry.getTimestamp();
+                String futureTide = tideEntry.getType() + " TIDE";
+                double futureTideHeight = tideEntry.getHeight();
+                long tideTime = tideEntry.getTimestamp();
                 ZonedDateTime futureTideTime = Instant.ofEpochSecond(tideTime)
                         .atZone(ZoneId.of("America/Los_Angeles"));
                 String formattedFutureTideTime = futureTideTime.format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -221,11 +226,23 @@ public class CurrentMapper {
             }
         }
 
+        if (futureTideInfo == null) {
+            throw new NoSuchElementException("No future tide found after the timestamp: " + nearestHour);
+        }
+
         currentSpot.setFuturetide(futureTideInfo);
         System.out.println("Here is the future tide info: " + futureTideInfo);
     }
 
 
+    //Current Swells				    String Top 1.6ft @ 14s SSW 193º three swells locate by hour and pull top 3; need logic for SSW, SSE etc. 251 degrees is WSW...so find 					 something for the logic
+    public void SL_SwellOne(){
+
+    }
+
+    public void SL_SwellTwo(){}
+
+    public void SL_SwellThree(){}
 
 
 
@@ -254,10 +271,5 @@ currentSpot.setSurfLineWaveHeight();
      //Air temperature current  	    String 83ºF
     public void airTemperature(){}
 
-    //Current Swells				    String Top 1.6ft @ 14s SSW 193º three swells locate by hour and pull top 3; need logic for SSW, SSE etc. 251 degrees is WSW...so find 					 something for the logic
-    public void swellOne(){}
 
-    public void swellTwo(){}
-
-    public void swellThree(){}
 } */
