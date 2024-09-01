@@ -25,11 +25,12 @@ public class CurrentMapper {
     private final SurfLine_wind_DTO currentWindDTO;
     private final SurfLine_weather_DTO currentWeatherDTO;
     private final SurfLine_tides_DTO currentTidesDTO;
+    private final SurfLine_swells_DTO currentSwellsDTO;
 
     Long nearestHour = TimeStampUtils.NearestHour();
     Long midnight = TimeStampUtils.Midnight();
 
-    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO, SurfLine_sunlight_DTO currentSunlightDTO, SurfLine_surf_DTO currentSurfDTO, SurfLine_wind_DTO currentWindDTO, SurfLine_weather_DTO currentWeatherDTO, SurfLine_tides_DTO currentTidesDTO) {
+    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO, SurfLine_sunlight_DTO currentSunlightDTO, SurfLine_surf_DTO currentSurfDTO, SurfLine_wind_DTO currentWindDTO, SurfLine_weather_DTO currentWeatherDTO, SurfLine_tides_DTO currentTidesDTO, SurfLine_swells_DTO currentSwellsDTO) {
         this.currentSpot = currentSpot;
         this.currentRatingDTO = currentRatingDTO;
         this.currentSunlightDTO = currentSunlightDTO;
@@ -37,6 +38,7 @@ public class CurrentMapper {
         this.currentWindDTO = currentWindDTO;
         this.currentWeatherDTO = currentWeatherDTO;
         this.currentTidesDTO = currentTidesDTO;
+        this.currentSwellsDTO = currentSwellsDTO;
     }
 
     //@Scheduled
@@ -177,7 +179,6 @@ public class CurrentMapper {
 
     //Tide current				    String Low Tide @ 16:00 >>> will have to have some logic for finding the low or high tide and time
 
-
     public void SL_Tides() {
         List<SurfLine_tides_DTO.DataData.TideEntry> tideEntries = currentTidesDTO.getData().getTides();
         boolean tideFound = false;
@@ -200,13 +201,10 @@ public class CurrentMapper {
                 break;
             }
         }
-
         if (!tideFound) {
             throw new NoSuchElementException("No tide information found for the timestamp: " + nearestHour);
         }
     }
-
-
 
     //Future Low or High Tide
     public void SL_FutureTides() {
@@ -225,24 +223,71 @@ public class CurrentMapper {
                 break; // Exit the loop after finding the next tide
             }
         }
-
         if (futureTideInfo == null) {
             throw new NoSuchElementException("No future tide found after the timestamp: " + nearestHour);
         }
-
         currentSpot.setFuturetide(futureTideInfo);
         System.out.println("Here is the future tide info: " + futureTideInfo);
     }
 
 
     //Current Swells				    String Top 1.6ft @ 14s SSW 193º three swells locate by hour and pull top 3; need logic for SSW, SSE etc. 251 degrees is WSW...so find 					 something for the logic
-    public void SL_SwellOne(){
+    public void SL_Swells() {
+        List<SurfLine_swells_DTO.DataData.SwellEntry> swellEntries = currentSwellsDTO.getData().getSwells();
 
+        // Find the SwellEntry for the given timestamp
+        for (SurfLine_swells_DTO.DataData.SwellEntry swellEntry : swellEntries) {
+            if (swellEntry.getTimestamp().equals(nearestHour)) {
+                List<SurfLine_swells_DTO.DataData.SwellEntry.SwellData> swells = swellEntry.getSwells();
+
+                // Ensure there are at least three swells available
+                if (swells.size() >= 3) {
+                    String[] swellInfos = new String[3]; // Array to store swell information
+
+                    for (int i = 0; i < 3; i++) {
+                        SurfLine_swells_DTO.DataData.SwellEntry.SwellData swell = swells.get(i);
+                        String compassDirection = convertDirectionToCompass(swell.getDirection());
+                        swellInfos[i] = String.format("%.1fft @ %ds %s %.0fº",
+                                swell.getHeight(), swell.getPeriod(), compassDirection, swell.getDirection());
+                    }
+
+                    // Set each swell string into the corresponding CurrentSpot method
+                    currentSpot.setSwellOne(swellInfos[0]);
+                    currentSpot.setSwellTwo(swellInfos[1]);
+                    currentSpot.setSwellThree(swellInfos[2]);
+
+                    // Print the stored swell information
+                    for (int i = 0; i < swellInfos.length; i++) {
+                        System.out.println("Swell " + (i + 1) + ": " + swellInfos[i]);
+                    }
+                } else {
+                    throw new NoSuchElementException("Not enough swells data available for the timestamp: " + nearestHour);
+                }
+                return;
+            }
+        }
+
+        throw new NoSuchElementException("No swell data found for the timestamp: " + nearestHour);
     }
 
-    public void SL_SwellTwo(){}
+    // Helper method to convert direction in degrees to compass direction
+    private String convertDirectionToCompass(Double direction) {
+        String[] compassDirections = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
+        // Convert direction to int index
+        int index = (int) Math.round((direction + 11.25) % 360 / 22.5);
+        // Handle the case where index might be 16 due to rounding
+        if (index >= compassDirections.length) {
+            index = compassDirections.length - 1;
+        }
+        return compassDirections[index];
+    }
 
-    public void SL_SwellThree(){}
+
+
+
+
+
 
 
 

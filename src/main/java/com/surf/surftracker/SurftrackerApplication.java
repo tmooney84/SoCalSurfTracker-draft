@@ -45,6 +45,7 @@ public class SurftrackerApplication implements CommandLineRunner {
 		try {
 			//once the services are run, I could implement them here as a list
 			SurfLine_rating_DTO ratingDTO = lt_rating_service.getSurfLineRating();
+			SurfLine_swells_DTO swellsDTO = lt_swells_service.getSurfLineSwells();
 			SurfLine_sunlight_DTO sunlightDTO = lt_sunlight_service.getSurfLineSunlight();
 			SurfLine_surf_DTO surfDTO = lt_surf_service.getSurfLineSurf();
 			SurfLine_weather_DTO weatherDTO = lt_weather_service.getSurfLineWeather();
@@ -52,10 +53,11 @@ public class SurftrackerApplication implements CommandLineRunner {
 			SurfLine_tides_DTO tidesDTO = lt_tides_service.getSurfLineTides();
 
 
-			CurrentMapper ltCurrentMapper = new CurrentMapper(lowerTrestlesCurrent,ratingDTO,sunlightDTO,surfDTO,windDTO, weatherDTO, tidesDTO);
+			CurrentMapper ltCurrentMapper = new CurrentMapper(lowerTrestlesCurrent,ratingDTO,sunlightDTO,surfDTO,windDTO, weatherDTO, tidesDTO, swellsDTO);
 
 			//Running methods to map fields to Current object
 			ltCurrentMapper.SL_FutureTides();
+			ltCurrentMapper.SL_Swells();
 			ltCurrentMapper.SL_Sunrise();
 			ltCurrentMapper.SL_Sunset();
 			ltCurrentMapper.SL_Surf();
@@ -65,7 +67,6 @@ public class SurftrackerApplication implements CommandLineRunner {
 			ltCurrentMapper.SL_WeatherConditons();
 			ltCurrentMapper.SL_Wind();
 
-			SurfLine_swells_DTO swellsDTO = lt_swells_service.getSurfLineSwells();
 
 			lt_ds_service.getDeepSwellCurrent();
 			lt_sc_service.getSurfCaptainCurrent();
