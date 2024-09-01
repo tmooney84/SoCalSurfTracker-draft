@@ -316,7 +316,7 @@ public class CurrentMapper {
         if (futureTideInfo == null) {
             throw new NoSuchElementException("No future tide found after the timestamp: " + nearestHour);
         }
-        currentSpot.setFuturetide(futureTideInfo);
+        currentSpot.setFutureTide(futureTideInfo);
         System.out.println("Here is the future tide info: " + futureTideInfo);
     }
 
