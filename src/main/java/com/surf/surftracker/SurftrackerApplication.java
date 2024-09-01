@@ -62,7 +62,7 @@ public class SurftrackerApplication implements CommandLineRunner {
 			ltCurrentMapper.SL_Sunset();
 			ltCurrentMapper.SL_Surf();
 			ltCurrentMapper.SL_Tides();
-			ltCurrentMapper.SL_WaterTemp();
+			ltCurrentMapper.SL_AirTemp();
 			ltCurrentMapper.SL_WaveQuality();
 			ltCurrentMapper.SL_WeatherConditons();
 			ltCurrentMapper.SL_Wind();
@@ -72,6 +72,8 @@ public class SurftrackerApplication implements CommandLineRunner {
 			lt_sc_service.getSurfCaptainCurrent();
 			lt_sf_service.getSurfForecastCurrent();
 
+			//Average Wave Height Needs to be found last
+			ltCurrentMapper.AverageWaveHeight();
 
 			// Print out the filled DTO's
 //			System.out.println(ratingDTO);
