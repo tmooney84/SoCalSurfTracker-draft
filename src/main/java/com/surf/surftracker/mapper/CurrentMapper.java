@@ -25,17 +25,19 @@ public class CurrentMapper {
     private final SurfLine_surf_DTO currentSurfDTO;
     private final SurfLine_wind_DTO currentWindDTO;
     private final SurfLine_weather_DTO currentWeatherDTO;
+    private final SurfLine_tides_DTO currentTidesDTO;
 
     Long nearestHour = TimeStampUtils.NearestHour();
     Long midnight = TimeStampUtils.Midnight();
 
-    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO, SurfLine_sunlight_DTO currentSunlightDTO, SurfLine_surf_DTO currentSurfDTO, SurfLine_wind_DTO currentWindDTO, SurfLine_weather_DTO currentWeatherDTO) {
+    public CurrentMapper(Current currentSpot, SurfLine_rating_DTO currentRatingDTO, SurfLine_sunlight_DTO currentSunlightDTO, SurfLine_surf_DTO currentSurfDTO, SurfLine_wind_DTO currentWindDTO, SurfLine_weather_DTO currentWeatherDTO, SurfLine_tides_DTO currentTidesDTO) {
         this.currentSpot = currentSpot;
         this.currentRatingDTO = currentRatingDTO;
         this.currentSunlightDTO = currentSunlightDTO;
         this.currentSurfDTO = currentSurfDTO;
         this.currentWindDTO = currentWindDTO;
         this.currentWeatherDTO = currentWeatherDTO;
+        this.currentTidesDTO = currentTidesDTO;
     }
 
     //@Scheduled
@@ -163,7 +165,6 @@ public class CurrentMapper {
 
     public void SL_WeatherConditons(){
         List<SurfLine_weather_DTO.DataData.WeatherEntry> condtionEntries = currentWeatherDTO.getData().getWeather();
-        long nearestHour = TimeStampUtils.NearestHour();
 
         for (SurfLine_weather_DTO.DataData.WeatherEntry conditionEntry : condtionEntries) {
             if (conditionEntry.getTimestamp().equals(nearestHour)) {
@@ -174,6 +175,60 @@ public class CurrentMapper {
         }
         throw new NoSuchElementException("No temperature found for the timestamp: " + nearestHour);
     }
+
+    //Tide current				    String Low Tide @ 16:00 >>> will have to have some logic for finding the low or high tide and time
+    public void SL_Tides() {
+        List<SurfLine_tides_DTO.DataData.TideEntry> tideEntries = currentTidesDTO.getData().getTides();
+
+
+        for (SurfLine_tides_DTO.DataData.TideEntry tideEntry : tideEntries) {
+            String tideInfo = "";
+            String tideType = "";
+            if (tideEntry.getTimestamp().equals(nearestHour)) {
+                Double tideHeight = tideEntry.getHeight();
+
+                if (tideEntry.getType().equals("LOW") || tideEntry.getType().equals("HIGH")) {
+                    tideType = tideEntry.getType() + " TIDE";
+                }
+                tideInfo = String.format("%.1f ft %s", tideHeight, tideType);
+                    currentSpot.setTide(tideInfo);
+                    System.out.println("Here is the tide info: " + tideInfo);
+            }
+
+        }
+    }
+
+
+    //Future Low or High Tide
+    public void SL_FutureTides() {
+        List<SurfLine_tides_DTO.DataData.TideEntry> tideEntries = currentTidesDTO.getData().getTides();
+
+        double futureTideHeight = 0;
+        String futureTide = "";
+        long tideTime = 0;
+        String futureTideInfo = "";
+
+        for(SurfLine_tides_DTO.DataData.TideEntry tideEntry : tideEntries) {
+            if (tideEntry.getTimestamp() > nearestHour && (tideEntry.getType().equals("LOW") || tideEntry.getType().equals("HIGH"))) {
+                futureTide = tideEntry.getType() + " TIDE";
+                futureTideHeight = tideEntry.getHeight();
+                tideTime = tideEntry.getTimestamp();
+                ZonedDateTime futureTideTime = Instant.ofEpochSecond(tideTime)
+                        .atZone(ZoneId.of("America/Los_Angeles"));
+                String formattedFutureTideTime = futureTideTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+                futureTideInfo = String.format("%.1f ft %s @ %s", futureTideHeight, futureTide, formattedFutureTideTime);
+                break; // Exit the loop after finding the next tide
+            }
+        }
+
+        currentSpot.setFuturetide(futureTideInfo);
+        System.out.println("Here is the future tide info: " + futureTideInfo);
+    }
+
+
+
+
+
 
 
 
@@ -193,13 +248,6 @@ currentSpot.setSurfLineWaveHeight();
 }
 */   /*
 
-
-
-    //Wind current				    String 5mph E
-    public void wind(){}
-
-    //Tide current				    String Low Tide @ 16:00 >>> will have to have some logic for finding the low or high tide and time
-    public void tide(){}
 
 
 

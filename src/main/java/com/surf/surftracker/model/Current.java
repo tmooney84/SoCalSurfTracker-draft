@@ -18,6 +18,7 @@ public class Current {
     private String surfForecastWaveHeight;
     private String wind;
     private String tide;
+    private String futuretide;
     private String waterTemperature;
     private String airTemperature;
     private String sunrise;

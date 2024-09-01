@@ -49,21 +49,23 @@ public class SurftrackerApplication implements CommandLineRunner {
 			SurfLine_surf_DTO surfDTO = lt_surf_service.getSurfLineSurf();
 			SurfLine_weather_DTO weatherDTO = lt_weather_service.getSurfLineWeather();
 			SurfLine_wind_DTO windDTO = lt_wind_service.getSurfLineWind();
+			SurfLine_tides_DTO tidesDTO = lt_tides_service.getSurfLineTides();
 
 
-			CurrentMapper ltCurrentMapper = new CurrentMapper(lowerTrestlesCurrent,ratingDTO,sunlightDTO,surfDTO,windDTO, weatherDTO);
+			CurrentMapper ltCurrentMapper = new CurrentMapper(lowerTrestlesCurrent,ratingDTO,sunlightDTO,surfDTO,windDTO, weatherDTO, tidesDTO);
 
 			//Running methods to map fields to Current object
-			ltCurrentMapper.SL_WaveQuality();
+			ltCurrentMapper.SL_FutureTides();
 			ltCurrentMapper.SL_Sunrise();
 			ltCurrentMapper.SL_Sunset();
 			ltCurrentMapper.SL_Surf();
-			ltCurrentMapper.SL_Wind();
+			ltCurrentMapper.SL_Tides();
 			ltCurrentMapper.SL_WaterTemp();
+			ltCurrentMapper.SL_WaveQuality();
 			ltCurrentMapper.SL_WeatherConditons();
+			ltCurrentMapper.SL_Wind();
 
 			SurfLine_swells_DTO swellsDTO = lt_swells_service.getSurfLineSwells();
-			SurfLine_tides_DTO tidesDTO = lt_tides_service.getSurfLineTides();
 
 			lt_ds_service.getDeepSwellCurrent();
 			lt_sc_service.getSurfCaptainCurrent();
