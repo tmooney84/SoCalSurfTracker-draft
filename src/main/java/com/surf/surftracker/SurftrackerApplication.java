@@ -4,33 +4,22 @@ import com.surf.surftracker.dto.*;
 import com.surf.surftracker.mapper.CurrentMapper;
 import com.surf.surftracker.model.Current;
 import com.surf.surftracker.service.*;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class SurftrackerApplication implements CommandLineRunner {
+public class SurftrackerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SurftrackerApplication.class, args);
 	}
 
-	//  @Bean
-//  CommandLineRunner commandLineRunner(UserService userService, BCryptPasswordEncoder encoder){
-//     return args -> {
-//
-//        userService.save(new User("user", encoder.encode("password")));
-//     };
-//  }
-
-		@Override
-		public void run(String... args) throws Exception {
-
-		//adjust Current object to include SurfSpotID and surfSpotName
+	@Bean
+	public Current getLowerTrestlesCurrent() {
 		Current lowerTrestlesCurrent = new Current();
 
-		//right now hard coded with the trestles related url
-		//pass in the url as a string to be used within each of these services
+		// Instantiate your services
 		SurfLine_rating_Service lt_rating_service = new SurfLine_rating_Service();
 		SurfLine_sunlight_Service lt_sunlight_service = new SurfLine_sunlight_Service();
 		SurfLine_surf_Service lt_surf_service = new SurfLine_surf_Service();
@@ -43,7 +32,7 @@ public class SurftrackerApplication implements CommandLineRunner {
 		SurfForecast_Service lt_sf_service = new SurfForecast_Service(lowerTrestlesCurrent);
 
 		try {
-			//once the services are run, I could implement them here as a list
+			// Fetch data from services
 			SurfLine_rating_DTO ratingDTO = lt_rating_service.getSurfLineRating();
 			SurfLine_swells_DTO swellsDTO = lt_swells_service.getSurfLineSwells();
 			SurfLine_sunlight_DTO sunlightDTO = lt_sunlight_service.getSurfLineSunlight();
@@ -52,10 +41,8 @@ public class SurftrackerApplication implements CommandLineRunner {
 			SurfLine_wind_DTO windDTO = lt_wind_service.getSurfLineWind();
 			SurfLine_tides_DTO tidesDTO = lt_tides_service.getSurfLineTides();
 
-
-			CurrentMapper ltCurrentMapper = new CurrentMapper(lowerTrestlesCurrent,ratingDTO,sunlightDTO,surfDTO,windDTO, weatherDTO, tidesDTO, swellsDTO);
-
-			//Running methods to map fields to Current object
+			// Map data to Current object
+			CurrentMapper ltCurrentMapper = new CurrentMapper(lowerTrestlesCurrent, ratingDTO, sunlightDTO, surfDTO, windDTO, weatherDTO, tidesDTO, swellsDTO);
 			ltCurrentMapper.SL_FutureTides();
 			ltCurrentMapper.SL_Swells();
 			ltCurrentMapper.SL_Sunrise();
@@ -67,29 +54,21 @@ public class SurftrackerApplication implements CommandLineRunner {
 			ltCurrentMapper.SL_WeatherConditons();
 			ltCurrentMapper.SL_Wind();
 
-
 			lt_ds_service.getDeepSwellCurrent();
 			lt_sc_service.getSurfCaptainCurrent();
 			lt_sf_service.getSurfForecastCurrent();
 
-			//Average Wave Height Needs to be found last
-			ltCurrentMapper.AverageWaveHeight();
+			// Average Wave Height Needs to be found last
 
-			// Print out the filled DTO's
-//			System.out.println(ratingDTO);
-//			System.out.println(sunlightDTO);
-//			System.out.println(surfDTO);
-//			System.out.println(swellsDTO);
-//			System.out.println(tidesDTO);
-//			System.out.println(weatherDTO);
-//			System.out.println(windDTO);
+			// ltCurrentMapper.AverageWaveHeight();
 
-			//Prints out the Current Lower Trestles Pojo
+			// Print out the Current Lower Trestles POJO for debugging
 			System.out.println("Lower Trestles: " + lowerTrestlesCurrent);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return lowerTrestlesCurrent;
 	}
-
 }
-

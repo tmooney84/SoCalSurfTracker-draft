@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Surf Tracker</title>
   <link rel="icon" type="image/x-icon" href="surf.JPG">
-  <link rel="stylesheet" href="picture_hourly.css">
+  <link rel="stylesheet" href="picture_five_day_styles.css">
   <script src="time.js" defer></script>
   <style>
     /* Add padding to table cells */
@@ -37,10 +37,8 @@
       border: 1px solid #dddddd;
     }
 
-
-
-/* Add padding to table cells */
-table.forecast-conditions td, 
+    /* Add padding to table cells */
+    table.forecast-conditions td, 
     table.forecast-conditions th {
       padding: 10px 15px;
     }
@@ -66,6 +64,7 @@ table.forecast-conditions td,
     table.forecast-conditions td {
       border: 1px solid #dddddd;
     }
+    
     /* Responsive styling for small screens */
     @media screen and (max-width: 700px) {
       table.forecast-conditions {
@@ -92,26 +91,29 @@ table.forecast-conditions td,
       }
 
       /* Hide Day headers in mobile */
-      
-  table.forecast-conditions tr:nth-of-type(1),
-  table.forecast-conditions tr:nth-of-type(2),
-  table.forecast-conditions tr:nth-of-type(3) {
-    display: none;
-  }
-  table.forecast-conditions td:before {
-        content: attr(data-label);
-        font-weight: bold;
-        display: block;
-        text-transform: uppercase;
+      table.forecast-conditions tr:nth-of-type(1),
+      table.forecast-conditions tr:nth-of-type(2),
+      table.forecast-conditions tr:nth-of-type(3) {
+        display: none;
       }
 
-  /*********/
+      table.forecast-conditions td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: inline-block; /* Display inline with the value */
+        text-transform: uppercase;
+        margin-right: 50px; /* Increase space between label and value */
+      }
+
       table.current-conditions td:before {
         content: attr(data-label);
         font-weight: bold;
-        display: block;
+        display: inline-block;
         text-transform: uppercase;
+        margin-right: 15px;
       }
+
+
 
       .video-time-container {
         flex-direction: column;
@@ -126,6 +128,8 @@ table.forecast-conditions td,
   </style>
 </head>
 
+
+
 <body>
   <!-- Side navigation bar -->
   <div class="topnav">
@@ -138,7 +142,7 @@ table.forecast-conditions td,
         <a href="#tamarack">Tamarack </a>
         <a href="#oceanside">Oceanside </a>
         <a href="#sano">San Onofre </a>
-        <a href="lowers_current.html">Lower Trestles</a>
+        <a href="lowerTrestlesCurrent.html">Lower Trestles</a>
         <a href="#uppers">Upper Trestles</a>
         <a href="tstreet_current.html">T-Street</a>
         <a href="#doheny">Doheny</a>
@@ -149,15 +153,14 @@ table.forecast-conditions td,
       </div>
     </div>
 
-    <a class="current" href="lowers_current.html">Current</a>
-    <a class="hourly" href="lowers_hourly.html">Hourly</a>
-    <a class="forecast" href="lowers_fiveday.html">5 Day</a>
+    <a class="current" href="lowerTrestlesCurrent.html">Current</a>
+    <a class="hourly" href="lowerTrestlesHourly.html">Hourly</a>
+    <a class="forecast" href="lowerTrestlesFiveDay.html">5 Day</a>
   </div>
 
   <div>
-    <h2 style="text-align: left;">Lower Trestles <br> Hourly Forecast </h2>
+    <h2 style="text-align: left;">Lower Trestles <br> 5 Day Forecast </h2>
   </div>
-
 
  <!-- Image, Time, and Conditions Container -->
  <div class="video-time-container">
@@ -183,137 +186,117 @@ table.forecast-conditions td,
   </div>
 </div>
 
-
-
-  <!-- Hourly Forecast Table -->
+  <!-- 5 Day Forecast Table -->
   <div style="padding: 16px">
     <div class="table-container" style="display: flex; justify-content: left;">
       <table class="forecast-conditions">
         <tr style="background-color: #00b6dd; color: white;">
           <th style="background-color: #00b6dd; color: white;">Day</th>
-          <td>12 AM</td>
-          <td>3 AM</td>
-          <td>6 AM</td>
-          <td>9 AM</td>
-          <td>12 PM</td>
-          <td>3 PM</td>
-          <td>6 PM</td>
-          <td>9 PM</td>
+          <td data-label="Monday">Monday 9/2</td>
+          <td data-label="Tuesday">Tuesday 9/3</td>
+          <td data-label="Wednesday">Wednesday 9/4</td>
+          <td data-label="Thursday">Thursday 9/5</td>
+          <td data-label="Friday">Friday 9/6</td>
         </tr>
         <tr>
           <th>Wave Height</th>
-          <td data-label= "12 AM">2-3 ft</td>
-          <td data-label= "3 AM">2-3 ft</td>
-          <td data-label= "6 AM">2-3 ft</td>
-          <td data-label= "9 AM">2-3 ft</td>
-          <td data-label= "12 PM">3-4 ft</td>
-          <td data-label= "3 PM">3-4+ ft</td>
-          <td data-label= "6 PM">2-3 ft</td>
-          <td data-label= "9 PM">2-3 ft</td>
+          <td data-label="Monday 9/2">2-3</td>
+          <td data-label="Tuesday 9/3">3-4+</td>
+          <td data-label="Wednesday 9/4">3-4</td>
+          <td data-label="Thursday 9/5">4-5</td>
+          <td data-label="Friday 9/6">4-5</td>
         </tr>
         <tr>
           <th class="source-indent">SurfLine</th>
-          <td data-label= "12 AM">2-3 ft</td>
-          <td data-label= "3 AM">2-3 ft</td>
-          <td data-label= "6 AM">2-3 ft</td>
-          <td data-label= "9 AM">2-3 ft</td>
-          <td data-label= "12 PM">3-4 ft</td>
-          <td data-label= "3 PM">3-4+ ft</td>
-          <td data-label= "6 PM">2-3 ft</td>
-          <td data-label= "9 PM">2-3 ft</td>
+          <td data-label="Monday 9/2">2-3</td>
+          <td data-label="Tuesday 9/3">3-4+</td>
+          <td data-label="Wednesday 9/4">3-4</td>
+          <td data-label="Thursday 9/5">4-5</td>
+          <td data-label="Friday 9/6">4-5</td>
         </tr>
         <tr>
           <th class="source-indent">SurfCaptain</th>
-          <td data-label= "12 AM">2-3 ft</td>
-          <td data-label= "3 AM">2-3 ft</td>
-          <td data-label= "6 AM">2-3 ft</td>
-          <td data-label= "9 AM">2-3 ft</td>
-          <td data-label= "12 PM">3-4 ft</td>
-          <td data-label= "3 PM">3-4+ ft</td>
-          <td data-label= "6 PM">2-3 ft</td>
-          <td data-label= "9 PM">2-3 ft</td>
+          <td data-label="Monday 9/2">2-3</td>
+          <td data-label="Tuesday 9/3">3-4+</td>
+          <td data-label="Wednesday 9/4">3-4</td>
+          <td data-label="Thursday 9/5">4-5</td>
+          <td data-label="Friday 9/6">4-5</td>
         </tr>
         <tr>
           <th class="source-indent">Surf-Forecast</th>
-          <td data-label= "12 AM">2-3 ft</td>
-          <td data-label= "3 AM">2-3 ft</td>
-          <td data-label= "6 AM">2-3 ft</td>
-          <td data-label= "9 AM">2-3 ft</td>
-          <td data-label= "12 PM">3-4 ft</td>
-          <td data-label= "3 PM">3-4+ ft</td>
-          <td data-label= "6 PM">2-3 ft</td>
-          <td data-label= "9 PM">2-3 ft</td>
+          <td data-label="Monday 9/2">2-3</td>
+          <td data-label="Tuesday 9/3">3-4+</td>
+          <td data-label="Wednesday 9/4">3-4</td>
+          <td data-label="Thursday 9/5">4-5</td>
+          <td data-label="Friday 9/6">4-5</td>
         </tr>
         <tr>
           <th class="source-indent">DeepSwell</th>
-          <td data-label= "12 AM">2-3 ft</td>
-          <td data-label= "3 AM">2-3 ft</td>
-          <td data-label= "6 AM">2-3 ft</td>
-          <td data-label= "9 AM">2-3 ft</td>
-          <td data-label= "12 PM">3-4 ft</td>
-          <td data-label= "3 PM">3-4+ ft</td>
-          <td data-label= "6 PM">2-3 ft</td>
-          <td data-label= "9 PM">2-3 ft</td>
+          <td data-label="Monday 9/2">2-3</td>
+          <td data-label="Tuesday 9/3">3-4+</td>
+          <td data-label="Wednesday 9/4">3-4</td>
+          <td data-label="Thursday 9/5">4-5</td>
+          <td data-label="Friday 9/6">4-5</td>
         </tr>
         <tr>
           <th>Quality</th>
-          <td data-label= "12 AM">Fair</td>
-          <td data-label= "3 AM">Fair</td>
-          <td data-label= "6 AM">Good</td>
-          <td data-label= "9 AM">Good</td>
-          <td data-label= "12 PM">Good</td>
-          <td data-label= "3 PM">Fair</td>
-          <td data-label= "6 PM">Fair</td>
-          <td data-label= "9 PM">Fair</td>
+          <td data-label="Monday 9/2">3-4</td>
+          <td data-label="Tuesday 9/3">3-4</td>
+          <td data-label="Wednesday 9/4">4</td>
+          <td data-label="Thursday 9/5">4-5</td>
+          <td data-label="Friday 9/6">4-5</td>
         </tr>
         <tr>
           <th>Primary Swell</th>
-          <td data-label= "12 AM">1.1FT @ 16s SW 214º</td>
-          <td data-label= "3 AM">1.1FT @ 15s SW 212º</td>
-          <td data-label= "6 AM">1.0FT @ 14s SW 211º</td>
-          <td data-label= "9 AM">1.0FT @ 14s SW 211º</td>
-          <td data-label= "12 PM">1.1FT @ 14s SW 211º</td>
-          <td data-label= "3 PM">1.0FT @ 14s SW 211º</td>
-          <td data-label= "6 PM">1.0FT @ 14s SW 211º</td>
-          <td data-label= "9 PM">1.0FT @ 14s SW 211º</td>
+          <td data-label="Monday 9/2">S (184°) 3.9ft@13s</td>
+          <td data-label="Tuesday 9/3">S (185°) 3.6ft@14s</td>
+          <td data-label="Wednesday 9/4">S (183°) 4ft@13s</td>
+          <td data-label="Thursday 9/5">S (182°) 4.2ft@13s</td>
+          <td data-label="Friday 9/6">S (184°) 4.5ft@13s</td>
         </tr>
         <tr>
           <th>Water Temperature</th>
-          <td data-label= "12 AM">67ºF</td>
-          <td data-label= "3 AM">67ºF</td>
-          <td data-label= "6 AM">67ºF</td>
-          <td data-label= "9 AM">67ºF</td>
-          <td data-label= "12 PM">67ºF</td>
-          <td data-label= "3 PM">67ºF</td>
-          <td data-label= "6 PM">67ºF</td>
-          <td data-label= "9 PM">67ºF</td>
+          <td data-label= "Monday 9/2">67ºF</td>
+          <td data-label= "Tuesday 9/3">67ºF</td>
+          <td data-label= "Wednesday 9/4">67ºF</td>
+          <td data-label= "Thursday 9/5">67ºF</td>
+          <td data-label= "Friday 9/6">67ºF</td>
         </tr>
         <tr>
           <th>Air Temperature</th>
-          <td data-label= "12 AM">67ºF</td>
-          <td data-label= "3 AM">87ºF</td>
-          <td data-label= "6 AM">87ºF</td>
-          <td data-label= "9 AM">87ºF</td>
-          <td data-label= "12 PM">87ºF</td>
-          <td data-label= "3 PM">87ºF</td>
-          <td data-label= "6 PM">87ºF</td>
-          <td data-label= "9 PM">87ºF</td>
+          <td data-label= "Monday 9/2">87ºF</td>
+          <td data-label= "Tuesday 9/3">87ºF</td>
+          <td data-label= "Wednesday 9/4">83ºF</td>
+          <td data-label= "Thursday 9/5">83ºF</td>
+          <td data-label= "Friday 9/6">87ºF</td>
+        </tr>
+        <tr>
+          <th>Sunrise</th>
+          <td data-label= "Monday 9/2">6:34 AM</td>
+          <td data-label= "Tuesday 9/3">6:34 AM</td>
+          <td data-label= "Wednesday 9/4">6:34 AM</td>
+          <td data-label= "Thursday 9/5">6:34 AM</td>
+          <td data-label= "Friday 9/6">6:34 AM</td>
+        </tr>
+        <tr>
+          <th>Sunset</th>
+          <td data-label= "Monday 9/2">7:34 PM</td>
+          <td data-label= "Tuesday 9/3">7:34 PM</td>
+          <td data-label= "Wednesday 9/4">7:34 PM</td>
+          <td data-label= "Thursday 9/5">7:34 PM</td>
+          <td data-label= "Friday 9/6">7:34 PM</td>
         </tr>
         <tr>
           <th>Weather</th>
-          <td data-label= "12 AM">Clear</td>
-          <td data-label= "3 AM">Clear</td>
-          <td data-label= "6 AM">Clear</td>
-          <td data-label= "9 AM">Clear</td>
-          <td data-label= "12 PM">Clear</td>
-          <td data-label= "3 PM">Clear</td>
-          <td data-label= "6 PM">Clear</td>
-          <td data-label= "9 PM">Clear</td>
+          <td data-label= "Monday 9/2">Clear</td>
+          <td data-label= "Tuesday 9/3">Clear</td>
+          <td data-label= "Wednesday 9/4">Clear</td>
+          <td data-label= "Thursday 9/5">Clear</td>
+          <td data-label= "Friday 9/6">Clear</td>
         </tr>
       </table>
     </div>
   </div>
-
 </body>
 
 </html>
