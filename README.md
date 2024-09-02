@@ -97,14 +97,14 @@ In addition to 5-day weather and surf forecasts there are photos and videos for 
 ## Technologies Used
 - **CSS:** For styling the website, including inline, internal, and external CSS. Utilizes Flexbox and optionally SASS/SCSS.
 - **HTML:** For structuring the web pages.
-- **Jackson** For mapping incoming JSON data from external API calls to manageable data objects.
-- **Java** For implementing the program within Spring Boot.
+- **Jackson:** For mapping incoming JSON data from external API calls to manageable data objects.
+- **Java:** For implementing the program within Spring Boot.
 - **JavaScript:** For adding interactivity to the website, including external scripts, event handling, and more.
-- **JSoup** For scraping necessary webdata from several websites.
-- **Spring Boot** For running the underlying web infrastructure and Tomcat Server.
-- **Spring Data JPA** For storing user data to backend database using MySQL.
-- **Spring Security** For implementing a login and persistence of users.
-- **WebClient** For making external API calls that returned JSON data.
+- **JSoup:** For scraping necessary webdata from several websites.
+- **Spring Boot:** For running the underlying web infrastructure and Tomcat Server.
+- **Spring Data JPA:** For storing user data to backend database using MySQL.
+- **Spring Security:** For implementing a login and persistence of users.
+- **WebClient:** For making external API calls that returned JSON data.
 
 ## Future Improvements
 - Async calls for updating data for five day and hourly updates
