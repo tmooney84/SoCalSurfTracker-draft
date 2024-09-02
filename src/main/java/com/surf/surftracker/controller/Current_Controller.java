@@ -26,6 +26,7 @@ public class Current_Controller {
         System.out.println("Here is the data getting to the controller: " + lowerTrestlesCurrent);
         return "test";
     }
+
     // Basic endpoint to confirm application is running
     @GetMapping("/testpage")
     public String testPage(Model model) {
@@ -35,9 +36,36 @@ public class Current_Controller {
 
     @GetMapping("/lowerTrestlesCurrent")
     public String getLowerTrestles(Model model) {
-       model.addAttribute("surfSpot", lowerTrestlesCurrent);
-       model.addAttribute("SurfSpot",lowerTrestlesCurrent);
-       return "lowerTrestlesCurrent";
+        model.addAttribute("surfSpot", lowerTrestlesCurrent);
+        model.addAttribute("SurfSpot", lowerTrestlesCurrent);
+        return "lowerTrestlesCurrent";
     }
-    // /lowerTrestlesCurrent
+
+    @GetMapping("/lowerTrestlesHourly")
+    public String lowerTrestlesHourly() {
+        return "lowerTrestlesHourly"; // Stubbed Page
+    }
+
+    @GetMapping("/lowerTrestlesFiveDay")
+    public String lowerTrestlesFiveDay() {
+        return "lowerTrestlesFiveDay"; // Stubbed Pag
+    }
+
+    @GetMapping("/TStreetCurrent")
+    public String TStreetCurrent() {
+        return "TStreetCurrent"; // Stubbed Page
+    }
+
+    @GetMapping("/TStreetHourly")
+    public String TStreetHourly() {
+        return "TStreetHourly"; // Stubbed Page
+    }
+
+    @GetMapping("/TStreetFiveDay")
+    public String TStreetFiveDay() {
+        return "TStreetFiveDay"; // Stubbed Page
+    }
+
+
+
 }

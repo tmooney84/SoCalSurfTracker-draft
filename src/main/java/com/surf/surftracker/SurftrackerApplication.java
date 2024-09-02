@@ -60,7 +60,7 @@ public class SurftrackerApplication {
 
 			// Average Wave Height Needs to be found last
 
-			// ltCurrentMapper.AverageWaveHeight();
+			ltCurrentMapper.AverageWaveHeight();
 
 			// Print out the Current Lower Trestles POJO for debugging
 			System.out.println("Lower Trestles: " + lowerTrestlesCurrent);

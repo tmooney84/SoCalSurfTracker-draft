@@ -43,78 +43,87 @@ public class CurrentMapper {
     //Current average wave height    String average of the 4 forecasts
 
     public void AverageWaveHeight() {
-            String[] waveHeights = {currentSpot.getSurfLineWaveHeight(), currentSpot.getDeepSwellWaveHeight(), currentSpot.getSurfCaptainWaveHeight(), currentSpot.getSurfForecastWaveHeight()};
-            // Calculate the average height
-            double averageHeight = calculateAverageWaveHeight(waveHeights);
+        String[] waveHeights = {
+                currentSpot.getSurfLineWaveHeight(),
+                currentSpot.getDeepSwellWaveHeight(),
+                currentSpot.getSurfCaptainWaveHeight(),
+                currentSpot.getSurfForecastWaveHeight()
+        };
+        // Calculate the average height
+        double averageHeight = calculateAverageWaveHeight(waveHeights);
 
-            // Format the average height
-            String formattedHeight = formatHeight(averageHeight);
+        // Format the average height
+        String formattedHeight = formatHeight(averageHeight);
 
-            // Print the formatted average height
-            System.out.println("Average Wave Height: " + formattedHeight);
-            currentSpot.setAverageWaveHeight(formattedHeight);
-        }
+        // Print the formatted average height
+        System.out.println("Average Wave Height: " + formattedHeight);
+        currentSpot.setAverageWaveHeight(formattedHeight);
+    }
 
-// Method to calculate the average wave height
-        public static double calculateAverageWaveHeight(String[] waveHeights) {
-            double totalHeight = 0;
-            int count = 0;
+    // Method to calculate the average wave height
+    public static double calculateAverageWaveHeight(String[] waveHeights) {
+        double totalHeight = 0;
+        int count = 0;
 
-            for (String waveHeight : waveHeights) {
-                // Remove any non-numeric characters
-                waveHeight = waveHeight.replaceAll("[^0-9-+]", "").trim();
-
-                // Check if the string contains a range or a single value
-                if (waveHeight.contains("-")) {
-                    String[] parts = waveHeight.split("-");
-                    double low = parseHeight(parts[0]);
-                    double high = parseHeight(parts[1]);
-                    totalHeight += (low + high) / 2;
-                } else if (waveHeight.contains("+")) {
-                    // Handle cases with a "+" (e.g., "1+ ft")
-                    double base = parseHeight(waveHeight.split("\\+")[0]);
-                    totalHeight += base + 0.5; // Assuming "+ ft" means an additional 0.5 feet
-                } else {
-                    totalHeight += parseHeight(waveHeight);
-                }
-                count++;
+        for (String waveHeight : waveHeights) {
+            if (waveHeight == null || waveHeight.isEmpty()) {
+                continue; // Skip if the wave height is null or empty
             }
 
-            if (count == 0) return 0; // Avoid division by zero
-            // Calculate the average and round to the nearest half foot
-            double averageHeight = totalHeight / count;
-            return roundToNearestHalfFoot(averageHeight);
-        }
+            // Remove any non-numeric characters
+            waveHeight = waveHeight.replaceAll("[^0-9-+]", "").trim();
 
-// Helper method to parse height from a string
-        private static double parseHeight(String heightString) {
-            try {
-                return Double.parseDouble(heightString.trim());
-            } catch (NumberFormatException e) {
-                // Handle any parsing errors gracefully
-                return 0;
-            }
-        }
-
-// Helper method to round to the nearest half foot
-        private static double roundToNearestHalfFoot(double height) {
-            return Math.round(height * 2) / 2.0;
-        }
-
-// Method to format height as a string
-        private static String formatHeight(double height) {
-            int roundedHeight = (int) Math.round(height);
-            int lowerBound = (int) Math.floor(height);
-            int upperBound = (int) Math.ceil(height);
-
-            if (height == roundedHeight) {
-                return roundedHeight + " ft";
-            } else if (roundedHeight - lowerBound < 0.5) {
-                return lowerBound + " ft";
+            // Check if the string contains a range or a single value
+            if (waveHeight.contains("-")) {
+                String[] parts = waveHeight.split("-");
+                double low = parseHeight(parts[0]);
+                double high = parseHeight(parts[1]);
+                totalHeight += (low + high) / 2;
+            } else if (waveHeight.contains("+")) {
+                // Handle cases with a "+" (e.g., "1+ ft")
+                double base = parseHeight(waveHeight.split("\\+")[0]);
+                totalHeight += base + 0.5; // Assuming "+ ft" means an additional 0.5 feet
             } else {
-                return lowerBound + "-" + upperBound + " ft";
+                totalHeight += parseHeight(waveHeight);
             }
+            count++;
         }
+
+        if (count == 0) return 0; // Avoid division by zero
+        // Calculate the average and round to the nearest half foot
+        double averageHeight = totalHeight / count;
+        return roundToNearestHalfFoot(averageHeight);
+    }
+
+    // Helper method to parse height from a string
+    private static double parseHeight(String heightString) {
+        try {
+            return Double.parseDouble(heightString.trim());
+        } catch (NumberFormatException e) {
+            // Handle any parsing errors gracefully
+            return 0;
+        }
+    }
+
+    // Helper method to round to the nearest half foot
+    private static double roundToNearestHalfFoot(double height) {
+        return Math.round(height * 2) / 2.0;
+    }
+
+    // Method to format height as a string
+    private static String formatHeight(double height) {
+        int roundedHeight = (int) Math.round(height);
+        int lowerBound = (int) Math.floor(height);
+        int upperBound = (int) Math.ceil(height);
+
+        if (height == roundedHeight) {
+            return roundedHeight + " ft";
+        } else if (roundedHeight - lowerBound < 0.5) {
+            return lowerBound + " ft";
+        } else {
+            return lowerBound + "-" + upperBound + " ft";
+        }
+    }
 
 
 
